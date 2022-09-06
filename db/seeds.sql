@@ -39,3 +39,13 @@ VALUES
 ('Medical Science Liaison', '<description>'),
 ('Accountant', '<description>'),
 ('Laweyer', '<description>');
+
+INSERT INTO salaries (department_id, role_id, amount)
+VALUES
+(1, 1, 100000),
+(1, 2, 90000),
+(2, 1, 95000),
+(2, 2, 65000),
+(2, 3, 150000),
+(3, 1, 250000),
+(3, 2, 180000);
