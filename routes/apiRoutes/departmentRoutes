@@ -1,0 +1,99 @@
+const express = require("express");
+const inquirer = require("inquirer");
+const router = express.Router();
+const db = require("../../db/connection");
+
+// View all employees by department
+router.get("/departments", (req, res) => {
+  const sql = `SELECT * FROM departments`;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: rows,
+    });
+    inquirer
+      .prompt([
+        {
+          name: "deptChoice",
+          type: "list",
+          choices: function () {
+            let choiceArray = rows.map((choice) => choice.department_name);
+            return choiceArray;
+          },
+          message: "Select a Department to view:",
+        },
+      ])
+      .then((answer) => {
+        let chosenDept;
+        console.log("test");
+        for (let i = 0; i < results.length; i++) {
+          if (rows[i].department_name === choice.deptChoice) {
+            chosenDept = results[i];
+          }
+        }
+        const query =
+          'SELECT e.id, e.first_name AS "First Name", e.last_name AS "Last Name", r.title AS "Title", d.department_name AS "Department", r.salary AS "Salary" FROM employees e INNER JOIN roles r ON r.id = e.role_id INNER JOIN departments d ON d.id = r.department_id WHERE ?;';
+        connection.query(
+          query,
+          { department_name: chosenDept.department_name },
+          (err, res) => {
+            if (err) throw err;
+            console.log(" ");
+            console.table(
+              chalk.yellow(
+                `All Employees by Department: ${chosenDept.department_name}`
+              ),
+              res
+            );
+            startApp();
+          }
+        );
+      });
+  });
+});
+
+// View a single department
+router.get("/department/:id", (req, res) => {
+  const sql = `SELECT * FROM departments WHERE id = ?`;
+  const params = [req.params.id];
+  db.query(sql, params, (err, row) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: row,
+    });
+  });
+});
+
+// Delete a department
+router.delete("/department/:id", (req, res) => {
+  const sql = `DELETE FROM departments WHERE id = ?`;
+  const params = [req.params.id];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: res.message });
+      // checks if anything was deleted
+    } else if (!result.affectedRows) {
+      res.json({
+        message: "Department not found",
+      });
+    } else {
+      res.json({
+        message: "deleted",
+        changes: result.affectedRows,
+        id: req.params.id,
+      });
+    }
+  });
+});
+
+module.exports = router;

@@ -30,15 +30,15 @@ VALUES
 
 INSERT INTO roles (name, description)
 VALUES
-('Sales Lead', '<description>'),
-('Project Lead', '<description>'),
-('Account Manager', '<description>'),
-('Legal Team Lead', '<description>'),
-('Sales Associate', '<description>'),
-('Science Staff', '<description>'),
-('Medical Science Liaison', '<description>'),
-('Accountant', '<description>'),
-('Laweyer', '<description>');
+('Sales Lead', 'Coordinates the sales department, supporting management, and ensuring sales quotas are reached'),
+('Project Lead', 'Collaborates with team members to complete their project work on time and within budget.'),
+('Account Manager', 'Handles customer complaints, finds solutions to their issues, and maintains a positive relationship between both parties for future business ventures.'),
+('Legal Team Lead', 'Oversees the entire legal ops team, taking on tasks such as staff and resource allocation, as well as leadership initiatives'),
+('Sales Associate', 'Participates in creating, launching, or implementing new products.'),
+('Science Staff', 'Develops and manages scientific research projects with minimal supervision.'),
+('Medical Science Liaison', 'Collaborates with scientists, physicians, and other medical experts to support trial enrollment, provide program and protocol training, and ensure that health care professionals have the most up to date information as the clinical development programs mature.'),
+('Accountant', 'Helps our business make critical financial decisions by collecting, tracking, and correcting the companys finances.'),
+('Laweyer', 'Interprets laws, rulings, and regulations for our industry leaders and science professionals.');
 
 INSERT INTO salaries (department_id, role_id, amount)
 VALUES

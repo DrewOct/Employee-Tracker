@@ -13,7 +13,7 @@ CREATE TABLE employees (
   CONSTRAINT fk_department FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE SET NULL,
     CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE SET NULL,
     CONSTRAINT fk_salary FOREIGN KEY (salary_id) REFERENCES salaries(id) ON DELETE SET NULL,
-    CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES managers(id) ON DELETE SET NULL,
+    CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES managers(id) ON DELETE SET NULL
 );
 
 CREATE TABLE departments (
@@ -30,4 +30,5 @@ id INTEGER AUTO_INCREMENT PRIMARY KEY,
 CREATE TABLE roles (
 id INTEGER AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(50) NOT NULL,
-  description TEXT);
+  description TEXT
+  );
