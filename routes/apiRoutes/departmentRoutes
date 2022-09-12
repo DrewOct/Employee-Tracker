@@ -5,7 +5,9 @@ const db = require("../../db/connection");
 
 // View all employees by department
 router.get("/departments", (req, res) => {
-  const sql = `SELECT * FROM departments`;
+  const sql =
+    'SELECT employees.* , first_name as "First Name" , last_name as "Last Name", department_name AS "Department" , role_name AS "Role" FROM employees WHERE department_name = ?';
+  const params = [req.params.id];
 
   db.query(sql, (err, rows) => {
     if (err) {
@@ -14,7 +16,7 @@ router.get("/departments", (req, res) => {
     }
     res.json({
       message: "success",
-      data: rows,
+      data: row,
     });
     inquirer
       .prompt([
@@ -36,9 +38,9 @@ router.get("/departments", (req, res) => {
             chosenDept = results[i];
           }
         }
-        const query =
-          'SELECT e.id, e.first_name AS "First Name", e.last_name AS "Last Name", r.title AS "Title", d.department_name AS "Department", r.salary AS "Salary" FROM employees e INNER JOIN roles r ON r.id = e.role_id INNER JOIN departments d ON d.id = r.department_id WHERE ?;';
-        connection.query(
+        // const query =
+        //   'SELECT department_name, business_home.first_name AS "First Name", business_home.last_name AS "Last Name", role.title AS "Title", departments.department_name AS "Department", role.salary AS "Salary" FROM business_homes INNER JOIN roles ON role.id = business_home.role_id INNER JOIN departments ON department.id = role.department_id WHERE ?;';
+        connection.sql(
           query,
           { department_name: chosenDept.department_name },
           (err, res) => {
@@ -59,7 +61,8 @@ router.get("/departments", (req, res) => {
 
 // View a single department
 router.get("/department/:id", (req, res) => {
-  const sql = `SELECT * FROM departments WHERE id = ?`;
+  const sql =
+    "SELECT employees.* , department.name role.name AS role_name department_name FROM employees LEFT JOIN departments ON employees.department_id = department.id LEFT JOIN roles ON employees.role_id = role.id WHERE employees.id = ?";
   const params = [req.params.id];
   db.query(sql, params, (err, row) => {
     if (err) {

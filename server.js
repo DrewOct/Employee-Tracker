@@ -52,58 +52,64 @@ db.connect((err) => {
 |_____| /_/        |_| |_|     |_____| \\_____/  /_/     |_____| |_____|      /_/        |_| /_/   |_| |_|  \\_| /_/   |_| \\_____/ |_____| |_|  \\_\\ 
 `
     );
-    inquirer
-      .prompt({
-        name: "menuChoice",
-        type: "list",
-        message: "Select an option",
-        choices: startScreen,
-      })
-      .then((answer) => {
-        switch (answer.menuChoice) {
-          case "View all Employees":
-            showAll();
-            break;
-          case "View all Employees by Department":
-            showByDept();
-            break;
-          case "View all Employees by Manager":
-            showByManager();
-            break;
-          case "Add Employee":
-            addEmployee();
-            break;
-          case "Remove Employee":
-            removeEmployee();
-            break;
-          case "Update Employee Role":
-            updateRole();
-            break;
-          case "View all Roles":
-            viewRoles();
-            break;
-          case "Add Role":
-            addRole();
-            break;
-          case "Remove Role":
-            removeRole();
-            break;
-          case "View all Departments":
-            viewDept();
-            break;
-          case "Add Department":
-            addDept();
-            break;
-          case "Remove Department":
-            removeDept();
-            break;
-          case "Exit":
-            connection.end();
-            break;
-        }
-      });
   });
+  startPrompt();
 });
+// console.log("test1");
+
+function startPrompt() {
+  inquirer
+    .prompt({
+      name: "menuChoice",
+      type: "list",
+      message: "Select an option",
+      choices: startScreen,
+    })
+    .then((answer) => {
+      switch (answer.menuChoice) {
+        case "View all Employees":
+          showAll();
+          console.log("View all Employees");
+          break;
+        case "View all Employees by Department":
+          showByDept();
+          break;
+        case "View all Employees by Manager":
+          showByManager();
+          break;
+        case "Add Employee":
+          addEmployee();
+          break;
+        case "Remove Employee":
+          removeEmployee();
+          break;
+        case "Update Employee Role":
+          updateRole();
+          break;
+        case "View all Roles":
+          viewRoles();
+          break;
+        case "Add Role":
+          addRole();
+          break;
+        case "Remove Role":
+          removeRole();
+          break;
+        case "View all Departments":
+          viewDept();
+          break;
+        case "Add Department":
+          addDept();
+          break;
+        case "Remove Department":
+          removeDept();
+          break;
+        case "Exit":
+          connection.end();
+          break;
+      }
+    });
+}
 
 // connect to routes
 // connect to employeeRoutes to request a list of all employees
@@ -115,6 +121,7 @@ const showAll = () => {
       //console.log("test:" + objectToArray(data)[0].first_name);
       console.table(data.data);
     });
+  startPrompt();
 };
 
 // connect to departmentRoutes to see all employees by department
@@ -122,8 +129,9 @@ const showByDept = () => {
   fetch(`http://localhost:${PORT}/api/departments`)
     .then((response) => response.json())
     .then((data) => {
-      console.table(data);
+      console.table(data.choices);
     });
+  startPrompt();
 };
 
 // converting json object to an array
