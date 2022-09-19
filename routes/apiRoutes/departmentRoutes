@@ -3,10 +3,10 @@ const inquirer = require("inquirer");
 const router = express.Router();
 const db = require("../../db/connection");
 
-// View all employees by department
+// View all departments
 router.get("/departments", (req, res) => {
   const sql =
-    'SELECT employees.* , first_name as "First Name" , last_name as "Last Name", department_name AS "Department" , role_name AS "Role" FROM employees WHERE department_name = ?';
+    'SELECT departments.id, department_name AS "Department" FROM departments';
   const params = [req.params.id];
 
   db.query(sql, (err, rows) => {
@@ -16,46 +16,11 @@ router.get("/departments", (req, res) => {
     }
     res.json({
       message: "success",
-      data: row,
+      data: rows,
     });
-    inquirer
-      .prompt([
-        {
-          name: "deptChoice",
-          type: "list",
-          choices: function () {
-            let choiceArray = rows.map((choice) => choice.department_name);
-            return choiceArray;
-          },
-          message: "Select a Department to view:",
-        },
-      ])
-      .then((answer) => {
-        let chosenDept;
-        console.log("test");
-        for (let i = 0; i < results.length; i++) {
-          if (rows[i].department_name === choice.deptChoice) {
-            chosenDept = results[i];
-          }
-        }
-        // const query =
-        //   'SELECT department_name, business_home.first_name AS "First Name", business_home.last_name AS "Last Name", role.title AS "Title", departments.department_name AS "Department", role.salary AS "Salary" FROM business_homes INNER JOIN roles ON role.id = business_home.role_id INNER JOIN departments ON department.id = role.department_id WHERE ?;';
-        connection.sql(
-          query,
-          { department_name: chosenDept.department_name },
-          (err, res) => {
-            if (err) throw err;
-            console.log(" ");
-            console.table(
-              chalk.yellow(
-                `All Employees by Department: ${chosenDept.department_name}`
-              ),
-              res
-            );
-            startApp();
-          }
-        );
-      });
+
+    // const query =
+    //   'SELECT department_name, business_home.first_name AS "First Name", business_home.last_name AS "Last Name", role.title AS "Title", departments.department_name AS "Department", role.salary AS "Salary" FROM business_homes INNER JOIN roles ON role.id = business_home.role_id INNER JOIN departments ON department.id = role.department_id WHERE = ?;';
   });
 });
 
@@ -75,6 +40,9 @@ router.get("/department/:id", (req, res) => {
     });
   });
 });
+
+// Add a department
+router.post("/department", (req, res) => {});
 
 // Delete a department
 router.delete("/department/:id", (req, res) => {
