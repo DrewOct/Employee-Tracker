@@ -2,7 +2,6 @@ const { debug } = require("console");
 const express = require("express");
 const router = express.Router();
 const db = require("../../db/connection");
-const inputCheck = require("../../utils/inputCheck");
 
 // Get all employees
 router.get("/employees", (req, res) => {
@@ -42,12 +41,16 @@ router.get("/employees", (req, res) => {
 
 // GET an employee by manager
 router.get("/employees/managers", (req, res) => {
-  const errors = inputCheck(req.body, "department_id");
+  let query = req.query;
+  let where = `WHERE roles.manager = 1`;
+  // filter by department
+  if (query.department) {
+    where += ` AND roles.department_id = ${query.department}`;
+  }
   const sql = `SELECT employees.* , department_name AS "Department Name", title
               FROM employees
               LEFT JOIN roles ON employees.role_id = roles.id
-              LEFT JOIN departments ON roles.department_id = departments.id
-              WHERE employees.role_id >= 1 AND employees.role_id <= 4`;
+              LEFT JOIN departments ON roles.department_id = departments.id ${where}`;
 
   const params = [req.params.id];
 
@@ -64,25 +67,25 @@ router.get("/employees/managers", (req, res) => {
 });
 
 // Add an employee
-router.post("/employee", ({ body }, res) => {
-  const errors = inputCheck(
-    body,
-    "first_name",
-    "last_name",
-    "department_id",
-    "role_id"
-  );
-  if (errors) {
-    res.status(400).json({ error: errors });
-    return;
-  }
+router.post("/employees", (req, res) => {
+  // const errors = inputCheck(
+  //   body,
+  //   "first_name",
+  //   "last_name",
+  //   "department_id",
+  //   "role_id"
+  // );
+  // if (errors) {
+  //   res.status(400).json({ error: errors });
+  //   return;
+  // }
 
-  const sql = `INSERT INTO employees (first_name, last_name, department_id, role_id) VALUES (?,?,?,?)`;
+  const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)`;
   const params = [
-    body.first_name,
-    body.last_name,
-    body.department_id,
-    body.role_id,
+    req.body.first_name,
+    req.body.last_name,
+    req.body.role_id,
+    req.body.manager,
   ];
 
   db.query(sql, params, (err, result) => {
@@ -92,7 +95,7 @@ router.post("/employee", ({ body }, res) => {
     }
     res.json({
       message: "success",
-      data: body,
+      data: req.body,
     });
   });
 });

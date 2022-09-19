@@ -199,7 +199,7 @@ const addEmployee = () => {
   console.log("Add an Employee");
   inquirer
     .prompt({
-      name: "First name",
+      name: "first_name",
       type: "input",
       message: "Enter employee's first name.",
     })
@@ -207,7 +207,7 @@ const addEmployee = () => {
       newEmployee.first_name = answer.first_name;
       inquirer
         .prompt({
-          name: "Last name",
+          name: "last_name",
           type: "input",
           message: "Enter employee's last name.",
         })
@@ -247,23 +247,55 @@ const addEmployee = () => {
                       }
                       inquirer
                         .prompt({
-                          name: "Title",
+                          name: "title",
                           type: "list",
                           message: "Select Title.",
                           choices: roleChoices,
                         })
                         .then((answer) => {
                           newEmployee.role_id = roleData[answer.title];
-                          fetch(`http://localhost:${PORT}/api/employees`, {
-                            method: "POST",
-                            body: JSON.stringify(newEmployee),
-                            headers: { "Content-Type": "application/json" },
-                          })
+
+                          fetch(
+                            `http://localhost:${PORT}/api/employees/managers?department=${newEmployee.department_id}`
+                          )
                             .then((response) => response.json())
                             .then((data) => {
-                              console.log(data.message);
-                              console.table(data.data);
-                              startPrompt();
+                              let managerData = {};
+                              let managerChoices = [];
+                              for (let i = 0; i < data.data.length; i++) {
+                                let key =
+                                  data.data[i].first_name +
+                                  " " +
+                                  data.data[i].last_name;
+                                managerChoices.push(key);
+                                managerData[key] = data.data[i].id;
+                              }
+                              inquirer
+                                .prompt({
+                                  name: "manager",
+                                  type: "list",
+                                  message: "Select Manager.",
+                                  choices: managerChoices,
+                                })
+                                .then((answer) => {
+                                  newEmployee.manager =
+                                    managerData[answer.manager];
+                                  fetch(
+                                    `http://localhost:${PORT}/api/employees`,
+                                    {
+                                      method: "POST",
+                                      body: JSON.stringify(newEmployee),
+                                      headers: {
+                                        "Content-Type": "application/json",
+                                      },
+                                    }
+                                  )
+                                    .then((response) => response.json())
+                                    .then((data) => {
+                                      console.log(data);
+                                      startPrompt();
+                                    });
+                                });
                             });
                         });
                     });

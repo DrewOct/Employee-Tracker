@@ -50,6 +50,7 @@ router.post("/roles", ({ body }, res) => {
   // }
   const sql = `INSERT INTO roles (title, salary, department_id, manager) VALUES (?,?,?,?)`;
   const params = [body.title, body.salary, body.department_id, body.manager];
+  console.log("manager:" + body.manager);
   db.query(sql, params, (err, result) => {
     if (err) {
       res.status(400).json({ error: err.message });
